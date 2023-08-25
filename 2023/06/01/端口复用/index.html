@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="端口复用说明：端口复用，意思是同一个端口可以实现web访问，也可以实现ssh连接。一般在内网渗透时服务器端口被限制只能访问服务器的80端口，如果我们需要连接ssh服务就无法通过22端连接，这时候就可以采取80端口复用连接ssh，或者需要隐藏服务端口时可以使用。 1.使用sslh实现安装sslh 123456Debian、Ubuntu 及其衍生品上运行sudo apt-get install ssl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="端口复用">
+<meta property="og:url" content="https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/index.html">
+<meta property="og:site_name" content="YangTuBlog">
+<meta property="og:description" content="端口复用说明：端口复用，意思是同一个端口可以实现web访问，也可以实现ssh连接。一般在内网渗透时服务器端口被限制只能访问服务器的80端口，如果我们需要连接ssh服务就无法通过22端连接，这时候就可以采取80端口复用连接ssh，或者需要隐藏服务端口时可以使用。 1.使用sslh实现安装sslh 123456Debian、Ubuntu 及其衍生品上运行sudo apt-get install ssl">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720111920237.png">
+<meta property="og:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720112442861.png">
+<meta property="og:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113203039.png">
+<meta property="og:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113651739.png">
+<meta property="og:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113823725.png">
+<meta property="og:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113921850.png">
+<meta property="article:published_time" content="2023-06-01T05:46:00.000Z">
+<meta property="article:modified_time" content="2023-08-25T14:55:32.906Z">
+<meta property="article:author" content="YangTu">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720111920237.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>端口复用</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%AE%89%E5%85%A8/">安全</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%A4%87%E5%BF%98%E5%BD%95">备忘录</a></li><!--
+     --><!--
+       --><li><a href="/archives/">所有文章</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/06/01/Tomcat%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90(CVE-2017-12615)/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/05/09/nps-1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&text=端口复用"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&is_video=false&description=端口复用"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=端口复用&body=Check out this article: https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&name=端口复用&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&t=端口复用"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">端口复用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8sslh%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1.使用sslh实现</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        端口复用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">YangTu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-06-01T05:46:00.000Z" class="dt-published" itemprop="datePublished">2023-06-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="端口复用"><a href="#端口复用" class="headerlink" title="端口复用"></a>端口复用</h1><p>说明：端口复用，意思是同一个端口可以实现web访问，也可以实现ssh连接。一般在内网渗透时服务器端口被限制只能访问服务器的80端口，如果我们需要连接ssh服务就无法通过22端连接，这时候就可以采取80端口复用连接ssh，或者需要隐藏服务端口时可以使用。</p>
+<h2 id="1-使用sslh实现"><a href="#1-使用sslh实现" class="headerlink" title="1.使用sslh实现"></a>1.使用sslh实现</h2><p>安装sslh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Debian、Ubuntu 及其衍生品上运行</span><br><span class="line">sudo apt-get install sslh</span><br><span class="line"></span><br><span class="line">RHEL、CentOS 上，你需要添加 EPEL 存储库，然后安装 SSLH</span><br><span class="line">sudo yum install epel-release</span><br><span class="line">sudo yum install sslh</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720111920237.png" alt="image-20230720111920237"></p>
+<p>创建配置文件 &#x2F;etc&#x2F;default&#x2F;sslh,写入以下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Default options for sslh initscript</span><br><span class="line"># sourced by /etc/init.d/sslh</span><br><span class="line"></span><br><span class="line"># binary to use: forked (sslh) or single-thread (sslh-select) version</span><br><span class="line"># systemd users: don&#x27;t forget to modify /lib/systemd/system/sslh.service</span><br><span class="line">Run=yes</span><br><span class="line">DAEMON=/usr/sbin/sslh</span><br><span class="line">DAEMON_OPTS=&quot;--user sslh --listen 192.168.88.195:80 --ssh 127.0.0.1:22 --http 127.0.0.1:80 --pidfile /var/run/sslh/sslh.pid&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720112442861.png" alt="image-20230720112442861"></p>
+<p>参数解释：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">--listen 为监听的网卡地址和端口也就是问哦们需要复用的端口</span><br><span class="line"></span><br><span class="line">--user 运行用户，一般为默认值</span><br><span class="line"></span><br><span class="line">--ssh 监听ssh流量转发到对应的地址其它协议类似</span><br></pre></td></tr></table></figure>
+
+<p>重要配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">配置以上后，如果web和ssh服务原端口和复用的端口一样，那么需要将web服务和ssh服务的修改配置，将监听地址0.0.0.0修改为127.0.0.1或者其它IP地址。</span><br></pre></td></tr></table></figure>
+
+<p>启动sslh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start sslh</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113203039.png" alt="image-20230720113203039"></p>
+<p>启动web服务区：</p>
+<p><img src="C:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113651739.png" alt="image-20230720113651739"></p>
+<p>访问web服务80</p>
+<p><img src="C:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113823725.png" alt="image-20230720113823725"></p>
+<p>连接ssh服务80端口</p>
+<p><img src="C:\Users\ykh\AppData\Roaming\Typora\typora-user-images\image-20230720113921850.png" alt="image-20230720113921850"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">首页</a></li>
+        
+          <li><a href="/tags/%E5%AE%89%E5%85%A8/">安全</a></li>
+        
+          <li><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></li>
+        
+          <li><a href="/tags/%E5%A4%87%E5%BF%98%E5%BD%95">备忘录</a></li>
+        
+          <li><a href="/archives/">所有文章</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">端口复用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8sslh%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1.使用sslh实现</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&text=端口复用"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&is_video=false&description=端口复用"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=端口复用&body=Check out this article: https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&title=端口复用"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&name=端口复用&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://ytcenter.github.io/2023/06/01/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8/&t=端口复用"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    YangTu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%AE%89%E5%85%A8/">安全</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></li><!--
+     --><!--
+       --><li><a href="/tags/%E5%A4%87%E5%BF%98%E5%BD%95">备忘录</a></li><!--
+     --><!--
+       --><li><a href="/archives/">所有文章</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
