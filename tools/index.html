@@ -21,8 +21,8 @@
   
     <meta name="description" content="h1">
 <meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="https://ytcenter.github.io/about/index.html">
+<meta property="og:title" content="工具合集">
+<meta property="og:url" content="https://ytcenter.github.io/tools/index.html">
 <meta property="og:site_name" content="YangTu">
 <meta property="og:description" content="h1">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
   
   
   
-  <title>about - YangTu</title>
+  <title>工具合集 - YangTu</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -109,6 +109,30 @@
           
           
             <li class="nav-item">
+              <a class="nav-link" href="/tools/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>工具合集</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tools/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>在线工具</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
               <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
                 <span>首页</span>
@@ -136,30 +160,6 @@
               <a class="nav-link" href="/categories/" target="_self">
                 <i class="iconfont icon-category-fill"></i>
                 <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
               </a>
             </li>
           
@@ -193,7 +193,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="about"></span>
+            <span id="subtitle" data-typed-text="工具合集"></span>
           
         </div>
 
@@ -210,25 +210,40 @@
   </header>
 
   <main>
-    
       <div class="container nopadding-x-md">
         <div id="board"
-          >
-          
+          >  
           <div class="container">
             <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<article class="page-content">
-  <h1>h1</h1>
-
-  
-
-</article>
-
-
-
+              <div class="col-10 col-md-10 m-auto">
+                <div style="display: flex; gap: 20px; justify-content: space-between;">
+                <article class="page-content">
+                    <a>Web安全工具：</a>
+                    <ul class="tool-list">
+                        <li><a href="https://github.com/sqlmapproject/sqlmap">sqlmap</a></li>
+                        <li><a href="https://github.com/safe6Sec/Fastjson">Fastjsonz-payload</a></li>
+                    </ul>      
+                </article>
+                <article class="page-content">
+                    <a>内网利器：</a>
+                    <ul class="tool-list">
+                        <li><a href="https://github.com/ehang-io/nps">nps-代理</a></li>                        
+                        <li><a href="https://github.com/zema1/suo5">suo5-WebShell代理</a></li>
+                        <li><a href="https://github.com/cw1997/NATBypass/releases">NATBypass-端口转发</a></li>
+                        <li><a href="https://github.com/gentilkiwi/mimikatz">mimikatz</a></li>
+                        <li><a href="https://github.com/gentilkiwi/kekeo">kekeo</a></li>
+                        <li><a href="https://github.com/maaaaz/impacket-examples-windows">impacket-examples-windows</a></li>
+                        <li><a href="https://github.com/mai-lang-chai/AD-Penetration-Testing-Tools/tree/master">AdFind</a></li>
+                        <li><a href="https://oss.zjun.info/file/Rubeus.exe">Rubeus</a></li>
+                        
+                    </ul>      
+                </article>
+                <article class="page-content">
+                    <a>综合利器：</a>
+                    <ul class="tool-list">
+                    </ul>      
+                </article>
+             </div>
               </div>
             </div>
           </div>
@@ -340,4 +355,33 @@
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
 </body>
+<style>
+.page-content {
+  padding: 20px;
+}
+
+.tool-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.tool-list li {
+  margin: 10px 0;
+}
+
+.tool-list a {
+  font-size: 16px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.tool-list a:hover {
+  text-decoration: underline;
+}
+article {
+  flex: 1;
+  max-width: 33%;
+}
+
+</style>
 </html>
